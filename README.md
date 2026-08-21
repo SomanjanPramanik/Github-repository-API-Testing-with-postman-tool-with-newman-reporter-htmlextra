@@ -1,5 +1,3 @@
-# GitHub Repository API Testing — Postman + Newman (htmlextra)
-
 # GitHub Repository API Testing — Postman, Newman (htmlextra) & JMeter
 
 API test suite for the GitHub Repos REST API. Covers functional testing via Postman/Newman and load testing via JMeter, both hitting the same repository lifecycle: existence check, create, duplicate-create rejection, unauthenticated-create rejection, read, update (visibility + name/description), and delete.
