@@ -1,0 +1,697 @@
+{
+  "info": {
+    "_postman_id": "997b3895-9009-4c29-b03e-fbe5914766d5",
+    "name": "GitHub API repository testing",
+    "description": "Github API Testing for creating , deleting , updating repository",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57400937",
+    "_collection_link": "https://go.postman.co/collection/57400937-997b3895-9009-4c29-b03e-fbe5914766d5?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Checking if there is any repository should be there before creating one",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//verify satus code\r",
+              "pm.test(\"Verify status code for a repository which doesn't exist for a valid account\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(404);\r",
+              "});\r",
+              "\r",
+              "//verify satus message\r",
+              "pm.test(\"Verify status message for a repository which doesn't exist for a valid account\", function () {\r",
+              "    pm.expect(pm.response.status).to.equal(\"Not Found\");\r",
+              "});\r",
+              "\r",
+              "//verify response time to be less than 2000 milisec : 2 sec\r",
+              "pm.test(\"Verify response time to be less than 2000 milisec for a repository which doesn't exist for a valid account\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+              "});\r",
+              "\r",
+              "//verify response body\r",
+              "pm.test(\"Verify response body for a repository which doesn't exist for a valid account\", function () {\r",
+              "   //first get the json data \r",
+              "   const response = pm.response.json();\r",
+              "   pm.expect(response.message).to.equal(\"Not Found\");\r",
+              "   pm.expect(response.status).to.equal(\"404\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{Bearer_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{Base_url}}/repos/{{user}}/{{repository}}",
+          "host": [
+            "{{Base_url}}"
+          ],
+          "path": [
+            "repos",
+            "{{user}}",
+            "{{repository}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Checking for creating new repository for authenticated user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//verify satus code\r",
+              "pm.test(\"Verify status code for a new repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(201);\r",
+              "});\r",
+              "\r",
+              "//verify satus message\r",
+              "pm.test(\"Verify status message for a new repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.status).to.equal(\"Created\");\r",
+              "});\r",
+              "\r",
+              "//verify response time to be less than 2000 milisec : 2 sec\r",
+              "pm.test(\"Verify response time to be less than 2000 milisec for a new repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+              "});\r",
+              "\r",
+              "//verify response body\r",
+              "pm.test(\"Verify response body for a new repository which is created for a valid account\", function () {\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response.name).to.equal(pm.environment.get(\"repository\"));\r",
+              "    pm.expect(response.description).to.equal(pm.environment.get(\"description\"));   \r",
+              "    pm.expect(response.full_name).to.equal(pm.environment.get(\"user\") + \"/\" + pm.environment.get(\"repository\"));\r",
+              "    pm.expect(response.owner.login).to.equal(pm.environment.get(\"user\"));\r",
+              "    pm.expect(response.private).to.equal(true);\r",
+              "});\r",
+              "\r",
+              "pm.environment.set(\"private\",true);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{Bearer_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/vnd.github+json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"{{repository}}\",\r\n  \"description\": \"{{description}}\",\r\n  \"private\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{Base_url}}/user/repos",
+          "host": [
+            "{{Base_url}}"
+          ],
+          "path": [
+            "user",
+            "repos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Checking for creating duplicate repository for authenticated user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//verify satus code\r",
+              "pm.test(\"Verify status code for a duplicate repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(422);\r",
+              "});\r",
+              "\r",
+              "//verify satus message\r",
+              "pm.test(\"Verify status message for a duplicate repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.status).to.equal(\"Unprocessable Entity\");\r",
+              "});\r",
+              "\r",
+              "//verify response time to be less than 2000 milisec : 2 sec\r",
+              "pm.test(\"Verify response time to be less than 2000 milisec for a duplicate repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+              "});\r",
+              "\r",
+              "//verify response body\r",
+              "pm.test(\"Verify response body for a duplicate repository which is created for a valid account\", function () {\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response.message).to.equal(\"Repository creation failed.\");\r",
+              "    pm.expect(response.status).to.equal(\"422\");\r",
+              "    pm.expect(response.errors[0].message).to.equal(\"name already exists on this account\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{Bearer_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/vnd.github+json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"{{repository}}\",\r\n  \"description\": \"{{description}}\",\r\n  \"private\": {{private}}\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{Base_url}}/user/repos",
+          "host": [
+            "{{Base_url}}"
+          ],
+          "path": [
+            "user",
+            "repos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Checking for creating new repository for unauthenticated user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//verify satus code\r",
+              "pm.test(\"Verify status code for a repository which is created for a invalid account\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(401);\r",
+              "});\r",
+              "\r",
+              "//verify satus message\r",
+              "pm.test(\"Verify status message for a repository which is created for a invalid account\", function () {\r",
+              "    pm.expect(pm.response.status).to.equal(\"Unauthorized\");\r",
+              "});\r",
+              "\r",
+              "//verify response time to be less than 2000 milisec : 2 sec\r",
+              "pm.test(\"Verify response time to be less than 2000 milisec for a repository which is created for a invalid account\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+              "});\r",
+              "\r",
+              "//verify the response body\r",
+              "pm.test(\"Verify the response body for a repository which is created for a invalid account\", function () {\r",
+              "    //get the response body first\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response.message).to.equal(\"Requires authentication\");\r",
+              "    pm.expect(response.status).to.equal(\"401\");\r",
+              "})"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/vnd.github+json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"{{repository}}\",\r\n  \"description\": \"{{description}}\",\r\n  \"private\": {{private}}\r\n}"
+        },
+        "url": {
+          "raw": "{{Base_url}}/user/repos",
+          "host": [
+            "{{Base_url}}"
+          ],
+          "path": [
+            "user",
+            "repos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Checking for getting a repository which exists for authenticated user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//verify satus code\r",
+              "pm.test(\"Verify status code for getting a  repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(200);\r",
+              "});\r",
+              "\r",
+              "//verify satus message\r",
+              "pm.test(\"Verify status message for getting a  repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+              "});\r",
+              "\r",
+              "//verify response time to be less than 2000 milisec : 2 sec\r",
+              "pm.test(\"Verify response time to be less than 2000 milisec for getting a repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+              "});\r",
+              "\r",
+              "//verify response body\r",
+              "pm.test(\"Verify response body for getting a repository which is created for a valid account\", function () {\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response.name).to.equal(pm.environment.get(\"repository\"));\r",
+              "    pm.expect(response.description).to.equal(pm.environment.get(\"description\"));   \r",
+              "    pm.expect(response.full_name).to.equal(pm.environment.get(\"user\") + \"/\" + pm.environment.get(\"repository\"));\r",
+              "    pm.expect(response.owner.login).to.equal(pm.environment.get(\"user\"));\r",
+              "    pm.expect(response.private).to.equal(true);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{Bearer_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{Base_url}}/repos/{{user}}/{{repository}}",
+          "host": [
+            "{{Base_url}}"
+          ],
+          "path": [
+            "repos",
+            "{{user}}",
+            "{{repository}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Checking for updating [private to public] existing repository for authentic user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//verify satus code\r",
+              "pm.test(\"Verify status code for updating repository visibility to public\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(200);\r",
+              "});\r",
+              "\r",
+              "//verify satus message\r",
+              "pm.test(\"Verify status message for updating repository visibility to public\", function () {\r",
+              "    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+              "});\r",
+              "\r",
+              "//verify response time to be less than 2000 milisec : 2 sec\r",
+              "pm.test(\"Verify response time to be less than 2000 milisec for updating repository visibility to public\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+              "});\r",
+              "\r",
+              "//verify the response body\r",
+              "pm.test(\"Verify the response body for updating repository visibility to public\", function () {\r",
+              "    //get the response body first\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response.private).to.equal(false);\r",
+              "    pm.expect(response.name).to.equal(pm.environment.get(\"repository\"));\r",
+              "})\r",
+              "\r",
+              "//sync with environment with variable\r",
+              "pm.environment.set(\"private\", false);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{Bearer_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"private\" : false\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{Base_url}}/repos/{{user}}/{{repository}}",
+          "host": [
+            "{{Base_url}}"
+          ],
+          "path": [
+            "repos",
+            "{{user}}",
+            "{{repository}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Checking for updating [changing repository name and description] existing repository for authentic user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//verify satus code\r",
+              "pm.test(\"Verify status code for updating repository name and description\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(200);\r",
+              "});\r",
+              "\r",
+              "//verify satus message\r",
+              "pm.test(\"Verify status message for updating repository name and description\", function () {\r",
+              "    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+              "});\r",
+              "\r",
+              "//verify response time to be less than 2000 milisec : 2 sec\r",
+              "pm.test(\"Verify response time to be less than 2000 milisec for updating repository name and description\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+              "});\r",
+              "\r",
+              "//verify the response body\r",
+              "pm.test(\"Verify the response body for updating repository name and description\", function () {\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response.name).to.equal(\"NewSampleRepositryFromPostMan\");\r",
+              "    pm.expect(response.description).to.equal(\"This is your updated repository\");\r",
+              "     pm.expect(response.full_name).to.equal(\"newlord369/NewSampleRepositryFromPostMan\");\r",
+              "    pm.expect(response.owner.login).to.equal(pm.environment.get(\"user\"));\r",
+              "    pm.expect(response.private).to.equal(pm.environment.get(\"private\"));\r",
+              "});\r",
+              "\r",
+              "//sync environment with new repo name and description\r",
+              "pm.environment.set(\"repository\", \"NewSampleRepositryFromPostMan\");\r",
+              "pm.environment.set(\"description\", \"This is your updated repository\");"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{Bearer_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\":\"NewSampleRepositryFromPostMan\",\r\n    \"description\":\"This is your updated repository\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{Base_url}}/repos/{{user}}/{{repository}}",
+          "host": [
+            "{{Base_url}}"
+          ],
+          "path": [
+            "repos",
+            "{{user}}",
+            "{{repository}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Checking for getting a repository which exists for authenticated user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//verify satus code\r",
+              "pm.test(\"Verify status code for a new repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(200);\r",
+              "});\r",
+              "\r",
+              "//verify satus message\r",
+              "pm.test(\"Verify status message for a new repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.status).to.equal(\"OK\");\r",
+              "});\r",
+              "\r",
+              "//verify response time to be less than 2000 milisec : 2 sec\r",
+              "pm.test(\"Verify response time to be less than 2000 milisec for a new repository which is created for a valid account\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+              "});\r",
+              "\r",
+              "//verify response body\r",
+              "pm.test(\"Verify response body for a new repository which is created for a valid account\", function () {\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response.name).to.equal(pm.environment.get(\"repository\"));\r",
+              "    pm.expect(response.description).to.equal(pm.environment.get(\"description\"));   \r",
+              "    pm.expect(response.full_name).to.equal(pm.environment.get(\"user\") + \"/\" + pm.environment.get(\"repository\"));\r",
+              "    pm.expect(response.owner.login).to.equal(pm.environment.get(\"user\"));\r",
+              "    pm.expect(response.private).to.equal(pm.environment.get(\"private\"));\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{Bearer_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{Base_url}}/repos/{{user}}/{{repository}}",
+          "host": [
+            "{{Base_url}}"
+          ],
+          "path": [
+            "repos",
+            "{{user}}",
+            "{{repository}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Checking for deleting a repository for authenticated user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//verify satus code\r",
+              "pm.test(\"Verify status code for deleting a repository\", function () {\r",
+              "    pm.expect(pm.response.code).to.equal(204);\r",
+              "});\r",
+              "\r",
+              "//verify satus message\r",
+              "pm.test(\"Verify status message for deleting a repository\", function () {\r",
+              "    pm.expect(pm.response.status).to.equal(\"No Content\");\r",
+              "});\r",
+              "\r",
+              "//verify response time to be less than 2000 milisec : 2 sec\r",
+              "pm.test(\"Verify response time to be less than 2000 milisec for deleting a repository\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+              "});\r",
+              "\r",
+              "//reset repository and description back to default after deletion\r",
+              "pm.environment.set(\"repository\", \"SampleRepositryFromPostMan\");\r",
+              "pm.environment.set(\"description\", \"This is a sample repository from postman tool\");\r",
+              "pm.environment.set(\"private\",true);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "setTimeout(function(){}, 4000);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{Bearer_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{Base_url}}/repos/{{user}}/{{repository}}",
+          "host": [
+            "{{Base_url}}"
+          ],
+          "path": [
+            "repos",
+            "{{user}}",
+            "{{repository}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

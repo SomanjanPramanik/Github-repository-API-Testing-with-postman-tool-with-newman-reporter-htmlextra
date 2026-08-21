@@ -1,0 +1,43 @@
+{
+	"id": "7d82ed83-7bc9-4c3f-8b3a-8694231b69b6",
+	"name": "GitHub Api testing environment",
+	"values": [
+		{
+			"key": "Base_url",
+			"value": "https://api.github.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "Bearer_token",
+			"value": "<your_github_personal_access_token>",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "user",
+			"value": "<your_github_username>",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "repository",
+			"value": "SampleRepositryFromPostMan",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "description",
+			"value": "This is a sample repository from postman tool",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "private",
+			"value": true,
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment"
+}

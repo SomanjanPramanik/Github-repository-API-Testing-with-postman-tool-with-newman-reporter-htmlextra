@@ -1,0 +1,19 @@
+# Postman environment with real secrets — never commit the real one.
+# Only the sanitized *.example.json template should be tracked.
+GitHub Api testing environment.json
+
+# Newman HTML/htmlextra report output (regenerated on every run)
+newman/
+
+# JMeter results/dashboards (regenerated on every run — the "JMeter reports" folder)
+JMeter reports/
+*.jtl
+*.log
+
+# NOTE: "JMeter Testing/" is NOT ignored — that's your actual .jmx test plan, keep it tracked.
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
