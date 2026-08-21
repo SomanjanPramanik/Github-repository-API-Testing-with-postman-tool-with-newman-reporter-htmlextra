@@ -17,3 +17,6 @@ JMeter reports/
 .idea/
 .DS_Store
 Thumbs.db
+
+#Original JMeter test plan (for reference, not used in the actual tests)
+JMeter Testing/Github repository API testing.jmx
